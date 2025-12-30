@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def load_graph(filename: str = "graph.txt") -> "adjacency matrix":
     graph = []
     file_in = open(filename)
@@ -46,6 +45,46 @@ def find_circuit_dfs(graph: list[list[int]], source: int = 0) -> list[int] | Non
 
     return None
 
+def find_euler_circuit_hierholzer(graph: list[list[int]]) -> list[int]:
+    """
+    :param graph: adjacency list
+    :return: array of vertices present euler circuit
+    """
+    n_vertices = len(graph)
+    n_edges = 0
+    for i in range(n_vertices):
+        n_edges += len(graph[i])
+    n_edges //= 2
+
+    result = find_circuit_dfs(graph, 0)
+    for i in range(len(result) - 1):
+        graph[result[i]].remove(result[i + 1])
+        graph[result[i + 1]].remove(result[i])
+
+    for i, v in enumerate(result):
+        if len(graph[v]) > 0:
+            index = i
+            break
+    else:
+        return result
+
+    while len(result) < n_edges + 1:
+        circuit = find_circuit_dfs(graph, result[index])
+        for i in range(len(circuit) - 1):
+            graph[circuit[i]].remove(circuit[i + 1])
+            graph[circuit[i + 1]].remove(circuit[i])
+
+        result = result[0: index] + circuit + result[index + 1:]
+        for i, v in enumerate(result):
+            if len(graph[v]) > 0:
+                index = i
+                break
+        else:
+            return result
+
+    return result
+
+
 def is_valid_circuit(graph: list[list[int]], circuit):
     if circuit[0] != circuit[-1]:
         return False
@@ -65,8 +104,12 @@ def is_valid_circuit(graph: list[list[int]], circuit):
 if __name__ == "__main__":
     adjacency_matrix = load_graph()
     adjacency_list = to_adjacency_list(adjacency_matrix)
+    adjacency_list_2 = to_adjacency_list(adjacency_matrix)
     for i in range(len(adjacency_list)):
         print(i, adjacency_list[i])
-    print("-------------")
-    circuit = find_circuit_dfs(adjacency_list, 9)
-    print(circuit, is_valid_circuit(adjacency_list, circuit))
+    print("--------------------------")
+    euler_circuit = find_euler_circuit_hierholzer(adjacency_list)
+    for i in range(len(adjacency_list_2)):
+        print(i, adjacency_list_2[i])
+    print("--------------------------")
+    print(euler_circuit, is_valid_circuit(adjacency_list_2, euler_circuit))
