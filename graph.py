@@ -30,7 +30,6 @@ def find_circuit_dfs(graph: list[list[int]], source: int = 0) -> list[int] | Non
         be_popped = True
 
         for v in graph[u]:
-            print(v, u, graph[u])
             if v == source and len(circuit) > 2:
                 return circuit + [v]
             if not visited_v[v]:
@@ -39,6 +38,7 @@ def find_circuit_dfs(graph: list[list[int]], source: int = 0) -> list[int] | Non
 
         if be_popped:
             stack.pop()
+            circuit.pop()
         else:
             stack.append(v)
             circuit.append(v)
@@ -68,5 +68,5 @@ if __name__ == "__main__":
     for i in range(len(adjacency_list)):
         print(i, adjacency_list[i])
     print("-------------")
-    circuit = find_circuit_dfs(adjacency_list, 6)
-    print(circuit)
+    circuit = find_circuit_dfs(adjacency_list, 9)
+    print(circuit, is_valid_circuit(adjacency_list, circuit))
