@@ -84,6 +84,45 @@ def find_euler_circuit_hierholzer(graph: list[list[int]]) -> list[int]:
 
     return result
 
+def is_a_bridge(graph: list[list[int]], u: int, v: int) -> bool:
+    """
+    :param graph: adjacency matrix
+    :param u: vertex incident on that edge
+    :param v: vertex incident on that edge
+    :return: is that edge a bridge?
+    """
+    graph[v].remove(u)
+    graph[u].remove(v)
+    n = len(graph)
+    visited = [False] * n
+    def dfs(u):
+        visited[u] = True
+        for v in graph[u]:
+            if not visited[v]:
+                dfs(v)
+    dfs(u)
+    graph[u].append(v)
+    graph[v].append(u)
+    return not visited[v]
+
+def find_euler_circuit_fleury(graph: list[list[int]]) -> list[int]:
+    """
+    :param graph: adjacency matrix presents graph
+    :return: array of vertices presents circuit
+    """
+    n_vertices = len(graph)
+    n_edges = 0
+    for i in range(n_vertices):
+        n_edges += len(graph[i])
+    n_edges //= 2
+
+    circuit = [0, graph[0][0]]
+    lead_vertex = 0
+    while len(circuit) < len(n_edges) + 1:
+        pass
+
+
+
 
 def is_valid_circuit(graph: list[list[int]], circuit):
     if circuit[0] != circuit[-1]:
