@@ -45,6 +45,22 @@ def find_circuit_dfs(graph: list[list[int]], source: int = 0) -> list[int] | Non
 
     return None
 
+
+def hierholzer_by_gemini(adj):
+    stack = [0]
+    circuit = []
+
+    while stack:
+        u = stack[-1]
+
+        if adj[u]:
+            v = adj[u].pop()
+            stack.append(v)
+        else:
+            circuit.append(stack.pop())
+
+    return circuit[::-1]
+
 def find_euler_circuit_hierholzer(graph: list[list[int]]) -> list[int]:
     """
     :param graph: adjacency list
@@ -116,11 +132,26 @@ def find_euler_circuit_fleury(graph: list[list[int]]) -> list[int]:
         n_edges += len(graph[i])
     n_edges //= 2
 
-    circuit = [0, graph[0][0]]
     lead_vertex = 0
-    while len(circuit) < len(n_edges) + 1:
-        pass
+    circuit = [0]
+    while n_edges > 0:
+        next_vertices = None
 
+        for v in graph[lead_vertex]:
+            if not is_a_bridge(graph, lead_vertex, v) or len(graph[lead_vertex]) == 1:
+                # selected_edge = (lead_vertex, v)
+                next_vertices = v
+                break
+
+        circuit.append(next_vertices)
+
+        graph[next_vertices].remove(lead_vertex)
+        graph[lead_vertex].remove(next_vertices)
+        n_edges -= 1
+
+        lead_vertex = next_vertices
+
+    return circuit
 
 
 
@@ -144,11 +175,17 @@ if __name__ == "__main__":
     adjacency_matrix = load_graph()
     adjacency_list = to_adjacency_list(adjacency_matrix)
     adjacency_list_2 = to_adjacency_list(adjacency_matrix)
+    adjacency_list_3 = to_adjacency_list(adjacency_matrix)
+    adjacency_list_4 = to_adjacency_list(adjacency_matrix)
     for i in range(len(adjacency_list)):
         print(i, adjacency_list[i])
     print("--------------------------")
-    euler_circuit = find_euler_circuit_hierholzer(adjacency_list)
-    for i in range(len(adjacency_list_2)):
-        print(i, adjacency_list_2[i])
+    euler_circuit_hierholzer = find_euler_circuit_hierholzer(adjacency_list_2)
+    euler_circuit_fleury = find_euler_circuit_fleury(adjacency_list_3)
+    euler_circuit_gemini = hierholzer_by_gemini(adjacency_list_4)
+    for i in range(len(adjacency_list)):
+        print(i, adjacency_list[i])
     print("--------------------------")
-    print(euler_circuit, is_valid_circuit(adjacency_list_2, euler_circuit))
+    print(euler_circuit_hierholzer, is_valid_circuit(adjacency_list, euler_circuit_hierholzer))
+    print(euler_circuit_fleury, is_valid_circuit(adjacency_list, euler_circuit_fleury))
+    print(euler_circuit_gemini, is_valid_circuit(adjacency_list, euler_circuit_gemini))
