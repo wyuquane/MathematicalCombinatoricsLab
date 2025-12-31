@@ -139,7 +139,6 @@ def find_euler_circuit_fleury(graph: list[list[int]]) -> list[int]:
 
         for v in graph[lead_vertex]:
             if not is_a_bridge(graph, lead_vertex, v) or len(graph[lead_vertex]) == 1:
-                # selected_edge = (lead_vertex, v)
                 next_vertices = v
                 break
 
@@ -154,6 +153,20 @@ def find_euler_circuit_fleury(graph: list[list[int]]) -> list[int]:
     return circuit
 
 
+def bfs(graph: list[list[int]], start: int):
+    n = len(graph)
+    visited = [False] * n
+    queue = [start]
+    visited[start] = True
+
+    while queue:
+        u = queue.pop(0)
+        print(u)
+        for v in graph[u]:
+            if not visited[v]:
+                visited[v] = True
+                queue.append(v)
+
 
 def is_valid_circuit(graph: list[list[int]], circuit):
     if circuit[0] != circuit[-1]:
@@ -167,7 +180,7 @@ def is_valid_circuit(graph: list[list[int]], circuit):
         if visited_e[circuit[i]][circuit[i + 1]]:
             print("lap canh")
             return False
-        visited_e[circuit[i]][circuit[i + 1]] = visited_e[circuit[i]][circuit[i + 1]] = True
+        visited_e[circuit[i]][circuit[i + 1]] = visited_e[circuit[i + 1]][circuit[i]] = True
     return True
 
 
