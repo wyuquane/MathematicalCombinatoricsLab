@@ -1,6 +1,5 @@
 import heapq
 
-from tensorboard.plugins.projector import visualize_embeddings
 
 
 class TreeNode:
