@@ -23,8 +23,9 @@ def to_adjacency_matrix(graph: list[list[tuple[int, int]]]) -> list[list[int]]:
     :return: adjacency matrix
     """
     n = len(graph)
-    result = [[0] * n for _ in range(n)]
+    result = [[float("inf")] * n for _ in range(n)]
     for u in range(n):
+        result[u][u] = 0
         for v, w in graph[u]:
             result[u][v] = w
 
@@ -109,7 +110,7 @@ def count_components(graph: list[list[tuple[int, int]]]) -> int:
 
     return result
 
-def shortest_path_bfs(graph: list[list[tuple[int, int]]], start: int, end: int) -> list[int]:
+def shortest_path_bfs(graph: list[list[tuple[int, int]]], start: int, end: int) -> (list[int], int):
     """
     :param graph: adjacency list
     :param start: source
@@ -136,7 +137,61 @@ def shortest_path_bfs(graph: list[list[tuple[int, int]]], start: int, end: int) 
     while path[-1] != start:
         path.append(parent[path[-1]])
 
-    return path[::-1]
+    return path[::-1], dist[end]
+
+
+
+def dijkstra(graph: list[list[tuple[int, int]]], start: int, end: int) -> (list[int], int):
+    """
+    :param graph: adjacency matrix of a weighted graph
+    :param start: source of path
+    :param end: destination of path
+    :return: the shortest path
+    """
+    n = len(graph)
+    cost = graph[start].copy()
+    current_vertex = start
+    parent = [-1] * n
+    constant = [False] * n
+    constant[start] = True
+    for v in range(n):
+        if cost[v] != float("inf"):
+            parent[v] = start
+    for _ in range(n - 1):
+        print(current_vertex)
+        current_cost = cost.copy()
+
+        for v in range(n):
+            if not constant[v] and cost[v] > cost[current_vertex] + graph[current_vertex][v]:
+                print("in", v)
+                current_cost[v] = cost[current_vertex] + graph[current_vertex][v]
+                parent[v] = current_vertex
+
+        cost = current_cost.copy()
+
+        next_vertex = current_vertex
+        for v in range(n):
+            if not constant[v]:
+                next_vertex = v
+
+        for v in range(n):
+            if not constant[v] and cost[v] < cost[next_vertex]:
+                next_vertex = v
+
+        constant[next_vertex] = True
+        current_vertex = next_vertex
+    # print(cost)
+    # print(parent)
+    # print(constant)
+    # return
+    path = [end]
+    while path[-1] != start:
+        path.append(parent[path[-1]])
+
+    return path[::-1], cost[end]
+
+
+
 
 
 
@@ -150,4 +205,6 @@ if __name__ == "__main__":
     bfs_ordering = bfs(adjacency_list, 0)
     print(dfs_ordering, bfs_ordering)
     print(count_components(adjacency_list))
-    print(shortest_path_bfs(adjacency_list, 0, 9))
+    print(shortest_path_bfs(adjacency_list, 0, 8))
+    adjacency_matrix = to_adjacency_matrix(adjacency_list)
+    print(dijkstra(adjacency_matrix, 0, 9))
