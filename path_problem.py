@@ -154,16 +154,17 @@ def dijkstra(graph: list[list[tuple[int, int]]], start: int, end: int) -> (list[
     parent = [-1] * n
     constant = [False] * n
     constant[start] = True
+
     for v in range(n):
         if cost[v] != float("inf"):
             parent[v] = start
+
     for _ in range(n - 1):
-        print(current_vertex)
         current_cost = cost.copy()
 
         for v in range(n):
             if not constant[v] and cost[v] > cost[current_vertex] + graph[current_vertex][v]:
-                print("in", v)
+
                 current_cost[v] = cost[current_vertex] + graph[current_vertex][v]
                 parent[v] = current_vertex
 
@@ -180,10 +181,7 @@ def dijkstra(graph: list[list[tuple[int, int]]], start: int, end: int) -> (list[
 
         constant[next_vertex] = True
         current_vertex = next_vertex
-    # print(cost)
-    # print(parent)
-    # print(constant)
-    # return
+
     path = [end]
     while path[-1] != start:
         path.append(parent[path[-1]])
@@ -205,6 +203,6 @@ if __name__ == "__main__":
     bfs_ordering = bfs(adjacency_list, 0)
     print(dfs_ordering, bfs_ordering)
     print(count_components(adjacency_list))
-    print(shortest_path_bfs(adjacency_list, 0, 8))
+    print(shortest_path_bfs(adjacency_list, 0, 9))
     adjacency_matrix = to_adjacency_matrix(adjacency_list)
     print(dijkstra(adjacency_matrix, 0, 9))
