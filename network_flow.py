@@ -168,8 +168,32 @@ def edmonds_and_karp(graph: list[list[int]], src: int, tar: int) -> int:
 
     return max_flow
 
+def n_people_m_task(n: int, m: int, x: int, y: int) -> int:
+    """
+    :param n: number of people
+    :param m: number of task
+    :param x: maximum tasks per person
+    :param y: maximum person per task
+    :return:
+    """
+    n_vertices = 1 + n + m + 1
+    graph = [[0] * n_vertices for _ in range(n_vertices)]
+
+    for i in range(1, n + 1):
+        graph[0][i] = x
+
+    for i in range(n + 1, m + n + 1):
+        graph[i][n_vertices - 1] = y
+
+    for x in range(1, n + 1):
+        for y in range(n + 1, m + n + 1):
+            graph[x][y] = 1
+
+    return edmonds_and_karp(graph, 0, m + n + 1)
+
 if __name__ == "__main__":
     adjacency_matrix = load_graph()
     print(np.array(adjacency_matrix))
-    # print_all_cuts(adjacency_matrix)
+    print_all_cuts(adjacency_matrix)
     print(ford_and_fulkerson(adjacency_matrix, 0, 9))
+    print(n_people_m_task(3, 4, 2, 2))
