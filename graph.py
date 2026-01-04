@@ -1,6 +1,6 @@
 import numpy as np
 
-def load_graph(filename: str = "graph.txt") -> "adjacency matrix":
+def load_graph(filename: str = "unweighted_graph.txt") -> "adjacency matrix":
     graph = []
     file_in = open(filename)
     for line in file_in:

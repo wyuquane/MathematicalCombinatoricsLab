@@ -34,7 +34,7 @@ def to_adjacency_matrix(graph: list[list[tuple[int, int]]]) -> list[list[int]]:
 def to_edges_list(graph: list[list[tuple[int, int]]]) -> list[tuple[int, int, int]]:
     """
     :param graph: adjacency list
-    :return: edges list
+    :return: edges list with (weight, start, end) format
     """
     result = []
     n = len(graph)
