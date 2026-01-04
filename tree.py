@@ -134,7 +134,7 @@ def kruskal_algorithm(edges: list[tuple[int, int, int]], n: int) -> (list[tuple[
 
     heapq.heapify(edges)
     while len(mst_edges) < n - 1:
-        u, v, w  = heapq.heappop(edges)
+        w, u, v  = heapq.heappop(edges)
         if has_a_path(graph, u, v):
             continue
         else:
