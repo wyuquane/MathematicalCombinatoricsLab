@@ -41,7 +41,7 @@ def to_edges_list(graph: list[list[tuple[int, int]]]) -> list[tuple[int, int, in
     for u in range(n):
         for v, w in graph[u]:
             if u < v:
-                result.append((u, v, w))
+                result.append((w, u, v))
     return result
 
 def dfs(graph: list[list[tuple[int, int]]], start: int) -> list[int]:

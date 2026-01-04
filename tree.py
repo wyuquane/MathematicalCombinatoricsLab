@@ -1,5 +1,5 @@
 import heapq
-
+from path_problem import load_file, to_edges_list
 
 
 class TreeNode:
@@ -67,72 +67,6 @@ def preorder_inorder(preorder: list[int], inorder: list[int]) -> TreeNode | None
 
     return root
 
-def time(s: str):
-    hours_index = s.find(" hour")
-    comma_index = s.find(",")
-    minutes_index = s.find(" minute")
-
-    if hours_index == -1:
-        hour = 0
-        minute = int(s[0: minutes_index])
-    elif minutes_index == -1:
-        hour = int(s[0: hours_index])
-        minute = 0
-    else:
-        hour = int(s[0: hours_index])
-        minute = int(s[comma_index + 2: minutes_index])
-
-    return hour * 60 + minute
-
-def seat(s: str):
-    business_index = s.find(" business")
-    comma_index = s.find(",")
-    economy_index = s.find(" economy")
-
-    business = int(s[0: business_index])
-    economy_index = int(s[comma_index + 2: economy_index])
-
-    return business + economy_index
-
-def load_file(filename: str):
-    file_in = open(filename, "r")
-    flights = dict()
-    vertices = set()
-    edges = set()
-    for line in file_in:
-        entry = json.loads(line)
-
-        key = list(entry.keys())[0]
-        value = list(entry.values())[0]
-
-        source, destination = key.split(",")
-        if source == destination:
-            print("do thi co khuyen")
-        vertices.add(source)
-        vertices.add(destination)
-
-        if (source, destination) in edges:
-            print("co canh trung nhau")
-        else:
-            edges.add((source, destination, time(value[2])))
-        flights[key] = value
-
-    return flights, vertices, edges
-
-def construct_adjacent_matrix(filename: str):
-    flights, vertices, edges = load_file(filename)
-    n = len(vertices)
-    graph = [[float("inf")] * n for _ in range(n)]
-    index_to_name = dict()
-    name_to_index = dict()
-    for i, v in enumerate(vertices):
-        index_to_name[i] = v
-        name_to_index[v] = i
-
-    for e in edges:
-        graph[e[0]][e[1]] = e[2]
-
-    return graph, index_to_name, name_to_index
 
 def prims_algorithm(graph: list[list[int]]) -> (list[tuple[int]], int):
     """
@@ -211,5 +145,15 @@ def kruskal_algorithm(edges: list[tuple[int, int, int]], n: int) -> (list[tuple[
 
     return mst_edges, total_cost
 
+if __name__ == "__main__":
+    adjacency_list = load_file()
+    edges_list = to_edges_list(adjacency_list)
+    n_vertices = len(adjacency_list)
+
+    mst_prim, cost_prim = prims_algorithm(adjacency_list)
+    mst_kruskal, cost_kruskal = kruskal_algorithm(edges_list, n_vertices)
+
+    print(mst_prim, cost_prim)
+    print(mst_kruskal, cost_kruskal)
 
 
