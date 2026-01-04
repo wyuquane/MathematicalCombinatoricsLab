@@ -52,7 +52,7 @@ def print_all_cuts(graph: list[list[int]]) -> None:
     backtracking(1)
 
 
-def construct_residual_graph(capacity: list[list[int]], flow: list[list[int]]) -> "residual_graph":
+def construct_residual_graph(capacity: list[list[int]], flow: list[list[int]]) -> list[list[int]]:
     n = len(graph)
     residual_graph = [[0] * n for _ in range(n)]
 
@@ -62,6 +62,29 @@ def construct_residual_graph(capacity: list[list[int]], flow: list[list[int]]) -
             residual_graph[v][u] += flow[u][v]
 
     return residual_graph
+
+def dfs(graph: list[list[int]], src: int, tar: int, parent: list[int]) -> bool:
+    """
+    :param graph: adjacency matrix presents residual graph
+    :param src: source of flow
+    :param tar: target of flow
+    :param parent: keep trace augmenting path
+    :return: is there augmenting path in residual graph
+    """
+    n = len(graph)
+    visited = [False] * n
+    def local_dfs(u):
+        visited[u] = True
+        for v, w in enumerate(graph[u]):
+            if not visited[v] and w > 0:
+                parent[v] = u
+                local_dfs(v)
+
+    local_dfs(src)
+
+    return visited[tar]
+
+
 
 def bfs(graph: list[list[int]], src: int, tar: int, parent: list[int]) -> bool:
     """
@@ -99,7 +122,7 @@ def ford_and_fulkerson(graph: list[list[int]], src: int, tar: int) -> int:
     n = len(graph)
     parent = [-1] * n
     max_flow = 0
-    while bfs(graph, src, tar, parent):
+    while dfs(graph, src, tar, parent):
         v = tar
         path_flow = float("inf")
         while v != src:
@@ -117,7 +140,33 @@ def ford_and_fulkerson(graph: list[list[int]], src: int, tar: int) -> int:
 
     return max_flow
 
+def edmonds_and_karp(graph: list[list[int]], src: int, tar: int) -> int:
+    """
+    :param graph: adjacency matrix presents residual graph
+    :param src: source of flow
+    :param tar: target of flow
+    :return: max flow
+    """
+    n = len(graph)
+    parent = [-1] * n
+    max_flow = 0
+    while bfs(graph, src, tar, parent):
+        v = tar
+        path_flow = float("inf")
+        while v != src:
+            path_flow = min(path_flow, graph[parent[v]][v])
+            v = parent[v]
 
+        max_flow += path_flow
+
+        v = tar
+        while v != src:
+            u = parent[v]
+            graph[u][v] -= path_flow
+            graph[v][u] += path_flow
+            v = parent[v]
+
+    return max_flow
 
 if __name__ == "__main__":
     adjacency_matrix = load_graph()
