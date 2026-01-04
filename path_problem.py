@@ -149,15 +149,12 @@ def dijkstra(graph: list[list[tuple[int, int]]], start: int, end: int) -> (list[
     :return: the shortest path
     """
     n = len(graph)
-    cost = graph[start].copy()
+    cost = [float("inf")] * n
+    cost[start] = 0
     current_vertex = start
     parent = [-1] * n
     constant = [False] * n
     constant[start] = True
-
-    for v in range(n):
-        if cost[v] != float("inf"):
-            parent[v] = start
 
     for _ in range(n - 1):
         current_cost = cost.copy()
@@ -170,13 +167,12 @@ def dijkstra(graph: list[list[tuple[int, int]]], start: int, end: int) -> (list[
 
         cost = current_cost.copy()
 
-        next_vertex = current_vertex
-        for v in range(n):
-            if not constant[v]:
-                next_vertex = v
+        next_vertex = None
+        min_cost = float("inf")
 
         for v in range(n):
-            if not constant[v] and cost[v] < cost[next_vertex]:
+            if not constant[v] and cost[v] < min_cost:
+                min_cost = cost[v]
                 next_vertex = v
 
         constant[next_vertex] = True
@@ -205,4 +201,4 @@ if __name__ == "__main__":
     print(count_components(adjacency_list))
     print(shortest_path_bfs(adjacency_list, 0, 9))
     adjacency_matrix = to_adjacency_matrix(adjacency_list)
-    print(dijkstra(adjacency_matrix, 0, 9))
+    print(dijkstra(adjacency_matrix, 3, 9))
